@@ -4,9 +4,8 @@ import akka.actor.AbstractActor;
 import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
-import java.io.File;
 import java.util.*;
-import java.io.FileNotFoundException;
+
 
 public class Aggregator extends AbstractActor {
   private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
@@ -16,6 +15,7 @@ public class Aggregator extends AbstractActor {
   }
 
   // messages
+  // start-to-file
   static public class StartFile {
     public final String fileName;
     public StartFile(String fileName) {
@@ -23,22 +23,37 @@ public class Aggregator extends AbstractActor {
     }
   }
 
+  // end-to-file
   static public class EndFile {
     public final String fileName;
     public EndFile(String fileName) {
       this.fileName = fileName;
     }
   }
-  public static Map countMap = new HashMap<String, String>();
+
+  // line
+  public static Map countMap = new HashMap<String, Integer>();
 
   static public class Line {
     public final String fileName;
+    public final String line;
     public Integer counter;
     
-    public Line(String fileName) {
-      this.fileName = fileName;
+    public Line(String fileName, String line) {
       
+      this.fileName = fileName;
+      this.line = line;
+      counter = countMap.containsKey(fileName) ? (Integer) countMap.get(fileName) : 0;
+
+      
+      String [] words = line.split(" ");
+      counter+= words.length;
+      
+      countMap.put(fileName, counter);
+      
+      /*
       try{
+        
         counter = 0;    
         String path = "src/main/resources/logfile/" + fileName;
         File file = new File(path);
@@ -50,10 +65,11 @@ public class Aggregator extends AbstractActor {
         }
 
         countMap.put(fileName, String.valueOf(counter));
-      }catch(FileNotFoundException e)
-      {
+
+      }catch(FileNotFoundException e){
         e.printStackTrace();
       }
+      */
     }
   }
 
@@ -63,14 +79,8 @@ public class Aggregator extends AbstractActor {
   @Override
   public Receive createReceive() {
     return receiveBuilder()
-      .match(StartFile.class, startFile -> {
-        log.info("[" + startFile.fileName + "] start-to-file");
-      })
-      .match(Line.class, line -> {
-        log.info("[" + line.fileName + "] line");
-      })
       .match(EndFile.class, endFile -> {
-        log.info("[" + endFile.fileName +"] end-to-file" + " / Count: " + countMap.get(endFile.fileName));
+        log.info("[" + endFile.fileName +"] has [" + countMap.get(endFile.fileName) + "] "+ "words.");
       })
       .build();
   }

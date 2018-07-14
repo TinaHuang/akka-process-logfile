@@ -6,6 +6,8 @@ import akka.actor.Props;
 import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import java.util.*;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 import akka.yt.processlogfile.Aggregator.StartFile;
 import akka.yt.processlogfile.Aggregator.Line;
@@ -38,8 +40,24 @@ public class FileParser extends AbstractActor {
   public Receive createReceive() {
     return receiveBuilder()
       .match(Parse.class, parse -> {
+        // start-to-file
         aggregatorActor.tell(new StartFile(parse.fileName), getSelf());
-        aggregatorActor.tell(new Line(parse.fileName), getSelf());
+        
+        // line
+        //aggregatorActor.tell(new Line(parse.fileName), getSelf());
+        try{   
+          String path = "src/main/resources/logfile/" + parse.fileName;
+          File file = new File(path);
+          Scanner sc = new Scanner(file);
+          while(sc.hasNextLine()){
+            aggregatorActor.tell(new Line(parse.fileName, sc.nextLine()), getSelf());
+          }
+        }catch(FileNotFoundException e){
+          e.printStackTrace();
+        }
+        
+        
+        // end-of-file
         aggregatorActor.tell(new EndFile(parse.fileName), getSelf());
       })
       .build();

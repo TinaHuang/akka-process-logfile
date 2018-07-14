@@ -50,7 +50,6 @@ public class FileScanner extends AbstractActor {
       .match(Scan.class, scan -> {
         // filescanner send message
         for(String fileName : scan.fileNames){
-          log.info("File name: " + fileName);
           fileParserActor.tell(new Parse(fileName), getSelf());
         }   
       })
