@@ -1,11 +1,11 @@
-processlogfile
-==============
+akka-process-logfile
+--------------
 Java application with Akka framework. Aims to process log files and count words in the files.
 
 Getting Started
-===============
+---------------
 
-1. Install Java (1.7 or later) and maven: (in my case, i use [Homebrew](https://docs.brew.sh/Installation) to install)
+1. Install Java (1.7 or later) and maven: (in my case, I use [Homebrew](https://docs.brew.sh/Installation) to install)
 
         $ brew cask install java
         $ brew install maven
@@ -18,7 +18,7 @@ Getting Started
 
         $ mvn compile exec:exec
 
-4. And you'll see output like this:
+4. And you'll see the output like this:
 ```
 It's my first akka project!
 File count: 3
