@@ -1,8 +1,8 @@
 package akka.yt.processlogfile;
 
-import java.io.IOException;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
+import java.io.IOException;
 
 import akka.yt.processlogfile.FileScanner.Scan;
 
@@ -26,6 +26,7 @@ public class ProcessLogFile {
       System.in.read();
 
     } catch (IOException ioe) {
+      
     } finally {
       system.terminate();
     }

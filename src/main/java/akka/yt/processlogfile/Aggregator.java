@@ -6,7 +6,6 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import java.util.*;
 
-
 public class Aggregator extends AbstractActor {
   private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
@@ -40,36 +39,14 @@ public class Aggregator extends AbstractActor {
     public Integer counter;
     
     public Line(String fileName, String line) {
-      
+      // setup variables      
       this.fileName = fileName;
       this.line = line;
       counter = countMap.containsKey(fileName) ? (Integer) countMap.get(fileName) : 0;
 
-      
       String [] words = line.split(" ");
       counter+= words.length;
-      
       countMap.put(fileName, counter);
-      
-      /*
-      try{
-        
-        counter = 0;    
-        String path = "src/main/resources/logfile/" + fileName;
-        File file = new File(path);
-
-        Scanner sc = new Scanner(file);
-        while(sc.hasNextLine()){
-          String [] words = sc.next().split(" ");
-          counter+= words.length;
-        }
-
-        countMap.put(fileName, String.valueOf(counter));
-
-      }catch(FileNotFoundException e){
-        e.printStackTrace();
-      }
-      */
     }
   }
 

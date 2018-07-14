@@ -14,7 +14,6 @@ import akka.yt.processlogfile.Aggregator.Line;
 import akka.yt.processlogfile.Aggregator.EndFile;
 
 public class FileParser extends AbstractActor {
-  private LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);
 
   static public Props props(ActorRef aggregatorActor) {
     return Props.create(FileParser.class, () -> new FileParser(aggregatorActor));
@@ -44,18 +43,18 @@ public class FileParser extends AbstractActor {
         aggregatorActor.tell(new StartFile(parse.fileName), getSelf());
         
         // line
-        //aggregatorActor.tell(new Line(parse.fileName), getSelf());
         try{   
+          // process each file in folder
           String path = "src/main/resources/logfile/" + parse.fileName;
           File file = new File(path);
           Scanner sc = new Scanner(file);
+          // send each line to Aggregator to count words
           while(sc.hasNextLine()){
             aggregatorActor.tell(new Line(parse.fileName, sc.nextLine()), getSelf());
           }
         }catch(FileNotFoundException e){
           e.printStackTrace();
         }
-        
         
         // end-of-file
         aggregatorActor.tell(new EndFile(parse.fileName), getSelf());

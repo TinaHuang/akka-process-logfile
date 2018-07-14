@@ -34,7 +34,7 @@ public class FileScanner extends AbstractActor {
         }
         System.out.println(fileNames.toString());
       }else{ // need to enhance 
-        System.out.println("Cannot find any file in folder.");
+        System.out.println("Cannot find any file in the folder.");
       }
     }
   }
@@ -53,6 +53,6 @@ public class FileScanner extends AbstractActor {
           fileParserActor.tell(new Parse(fileName), getSelf());
         }   
       })
-        .build();
+      .build();
   }
 }
